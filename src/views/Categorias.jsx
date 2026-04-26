@@ -4,6 +4,7 @@ import { supabase } from "../database/supabaseconfig";
 
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
 import ModalEdicionCategoria from "../components/categorias/ModalEdicionCategoria";
+import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria";
 import NotificacionOperacion from "../components/NotificationOperation";
 import TablaCategorias from "../components/categorias/TablaCategorias";
 
@@ -17,6 +18,12 @@ const Categorias = () => {
   const [categoriaEditar, setCategoriaEditar] = useState({
     nombre_categoria: "",
     descripcion_categoria: ""
+  });
+
+  const [mostrarModalEliminacion, setMostrarModalEliminacion] = useState(false);
+
+  const [categoriaAEliminar, setCategoriaAEliminar] = useState({
+    id_categoria: "",
   });
 
   const [toast, setToast] = useState({ mostrar: false, mensaje: "", tipo: "" });
@@ -42,6 +49,11 @@ const Categorias = () => {
       descripcion_categoria: categoria.descripcion_categoria,
     });
     setMostrarModalEdicion(true); // Ahora sí abrimos el modal
+  };
+
+  const abrirModalEliminacion = (categoria) => {
+    setCategoriaAEliminar(categoria);
+    setMostrarModalEliminacion(true); // Ahora sí abrimos el modal
   };
 
   const manejoCambioInputEdicion = (e) => {
@@ -178,6 +190,44 @@ const Categorias = () => {
     }
   };
 
+
+  const eliminarCategoria = async () => {
+    if(!categoriaAEliminar) return;
+
+    try {
+      setMostrarModalEliminacion(false);
+
+      const {error} = await supabase
+      .from("categorias")
+      .delete()
+      .eq("id_categoria", categoriaAEliminar.id_categoria);
+
+      if (error) {
+        console.error("Error al eliminar categoria: ", error.message);
+        setToast({
+          mostrar: true,
+          mensaje: `Error al eliminar la categoría ${categoriaAEliminar.nombre_categoria}.`,
+          tipo: "error",
+        });
+        return;
+      }
+
+      await cargarCategorias();
+      setToast({
+        mostrar : true,
+        mensaje: `Categoría ${categoriaAEliminar.nombre_categoria} eliminada exiosamente.`,
+        tipo: "exito",
+      });
+    }catch (err) {
+      setToast({
+        mostrar: true,
+        mensaje: "Error inesperado al eliminar categoría.",
+        tipo: "error",
+      });
+      console.error("Excepción al eliminar categoría: ", err.mensaje);
+    }
+  };
+
   return (
     <Container className="mt-3">
 
@@ -219,6 +269,13 @@ const Categorias = () => {
         actualizarCategoria={actualizarCategoria}
       />
 
+      <ModalEliminacionCategoria
+        mostrarModalEliminacion={mostrarModalEliminacion}
+        setMostrarModalEliminacion={setMostrarModalEliminacion}
+        eliminarCategoria={eliminarCategoria}
+        categoria={categoriaAEliminar}
+      />
+
       {/* Tabla */}
       {!cargando && categorias.length > 0 && (
         <Row>
@@ -226,7 +283,7 @@ const Categorias = () => {
             <TablaCategorias
               categorias={categorias}
               abrirModalEdicion={abrirModalEdicion}
-              abrirModalEliminacion={() => alert("Modal Eliminación - Pendiente crear")}
+              abrirModalEliminacion={abrirModalEliminacion}
             />
           </Col>
         </Row>
