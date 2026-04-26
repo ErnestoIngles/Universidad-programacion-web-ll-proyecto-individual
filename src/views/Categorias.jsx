@@ -7,6 +7,7 @@ import ModalEdicionCategoria from "../components/categorias/ModalEdicionCategori
 import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria";
 import NotificacionOperacion from "../components/NotificationOperation";
 import TablaCategorias from "../components/categorias/TablaCategorias";
+import TarjetaCategoria from "../components/categorias/TarjetaCategoria";
 
 const Categorias = () => {
 
@@ -275,6 +276,14 @@ const Categorias = () => {
         eliminarCategoria={eliminarCategoria}
         categoria={categoriaAEliminar}
       />
+
+      <Col xs={12} sm={12} md={12} className="d-lg-none">
+        <TablaCategorias
+          categorias={categorias}
+          abrirModalEdicion={abrirModalEdicion}
+          abrirModalEliminacion={abrirModalEliminacion}
+          />
+      </Col>
 
       {/* Tabla */}
       {!cargando && categorias.length > 0 && (
