@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Alert } from "react-bootstrap";
+import { Container, Row, Col, Button, Alert, Pagination } from "react-bootstrap";
 import { supabase } from "../database/supabaseconfig";
 
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
@@ -9,6 +9,7 @@ import NotificacionOperacion from "../components/NotificationOperation";
 import TablaCategorias from "../components/categorias/TablaCategorias";
 import TarjetaCategoria from "../components/categorias/TarjetaCategoria";
 import CuadroBusquedas from "../components/busquedas/CuadroBusquedas";
+import Paginacion from "../components/ordenamiento/Paginacion";
 
 const Categorias = () => {
 
@@ -59,6 +60,19 @@ const Categorias = () => {
   }, [textoBusqueda, categorias]);
 // ####################################################
 
+
+
+// ############################Paginación###################
+  const [registrosPorPagina, establecerRegistrosPorPagina] = useState(5);
+  const [paginaActual, establcerPaginaActual] = useState(1);
+
+  const categoriasPaginadas = categoriasFiltradas.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina
+  );
+
+
+  //###########################################################
   const manejoCambioInput = (e) => {
     const { name, value } = e.target;
     setNuevaCategoria((prev) => ({
@@ -326,26 +340,15 @@ const Categorias = () => {
         categoria={categoriaAEliminar}
       />
 
-
-
-      {/* Tabla */}
-      {!cargando && categorias.length > 0 && (
-        <Row>
-          <Col xs={12} sm={12} md={12} className="d-none d-lg-block">
-            <TablaCategorias
-              categorias={categorias}
-              abrirModalEdicion={abrirModalEdicion}
-              abrirModalEliminacion={abrirModalEliminacion}
-            />
-          </Col>
-          <Col lg={12} className="d-lg-none">
-            <TarjetaCategoria
-              categorias={categorias}
-              abrirModalEdicion={abrirModalEdicion}
-              abrirModalEliminacion={abrirModalEliminacion}
-            />
-          </Col>
-        </Row>
+      {/* Paginación */}
+      {categoriasFiltradas.length > 0 && (
+        <Pagination
+          registrosPorPagina={registrosPorPagina}
+          totalRegistros={categoriasFiltradas.length}
+          paginaActual={paginaActual}
+          establcerPaginaActual={establcerPaginaActual}
+          establecerRegistrosPorPagina={establecerRegistrosPorPagina}
+        />
       )}
 
       {/* Sin registros */}
