@@ -50,14 +50,13 @@ const TarjetaCategoria = ({ categorias, abrirModalEdicion, abrirModalEliminacion
                 aria-label={`Categoria ${cat.nombre_categoria}`}
               >
                 <CardBody
-                  className={`p-2 ${
-                    esLaTarjetaActiva
+                  className={`p-2 ${esLaTarjetaActiva
                       ? "tarjeta-categoria-cuerpo-activo"
                       : "tarjeta-categoria-cuerpo-inactivo"
-                  }`}
+                    }`}
                 >
                   <Row className="align-items-center gx-3">
-                    <Col xs={2} className="px-2"> 
+                    <Col xs={2} className="px-2">
                       <div className="bg-light d-flex align-items-center justify-content-center rounded">
                         <i className="bi bi-bookmark text-muted fs-3"></i>
                       </div>
@@ -68,7 +67,7 @@ const TarjetaCategoria = ({ categorias, abrirModalEdicion, abrirModalEliminacion
                         {cat.nombre_categoria}
                       </div>
                       <div className="small text-muted text-truncate">
-                        {cat.descripcion_categoria} 
+                        {cat.descripcion_categoria}
                       </div>
                     </Col>
 
@@ -80,40 +79,40 @@ const TarjetaCategoria = ({ categorias, abrirModalEdicion, abrirModalEliminacion
                   </Row>
                 </CardBody>
 
-                {TarjetaActiva && (
+                {esLaTarjetaActiva && (
                   <div
-                  role="dialog"
-                  aria-modal="true"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIdTarjetaActiva(null);
-                  }}
-                  className="tarjeta-categoria-capa"
+                    role="dialog"
+                    aria-modal="true"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIdTarjetaActiva(null);
+                    }}
+                    className="tarjeta-categoria-capa"
                   >
                     <div
                       className="d-flex gap-2 tarjeta-categoria-botones-capa"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <Button
-                      variant="outline-warning"
-                      size="sm"
-                      onClick={() => {
-                        abrirModalEdicion(categoria);
-                        setIdTarjetaActiva(null);
-                      }}
-                      aria-label={`Editar ${categoria.nombre_categoria}`}
+                        variant="outline-warning"
+                        size="sm"
+                        onClick={() => {
+                          abrirModalEdicion(categoria);
+                          setIdTarjetaActiva(null);
+                        }}
+                        aria-label={`Editar ${categoria.nombre_categoria}`}
                       >
                         <i className="bi bi-pencil"></i>
                       </Button>
 
                       <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => {
-                        abrirModalEliminacion(categoria);
-                        setIdTarjetaActiva(null);
-                      }}
-                      aria-label={`Eliminar ${cat.nombre_categoria}`}
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => {
+                          abrirModalEliminacion(categoria);
+                          setIdTarjetaActiva(null);
+                        }}
+                        aria-label={`Eliminar ${cat.nombre_categoria}`}
                       >
                         <i className="bi bi-trash"></i>
                       </Button>
