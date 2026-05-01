@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col, InputGroup } from "react-bootstrap";
 
 const ModalRegistroProducto = ({ 
   mostrarModal, 
@@ -9,6 +9,7 @@ const ModalRegistroProducto = ({
   manejoCambioArcvhivo,
   agregarProducto,
   categorias, 
+  setMostrarModalCategoria
 }) => {
 
   const [ deshabilitado, setDeshabilitado ] = useState(false);
@@ -40,12 +41,14 @@ const ModalRegistroProducto = ({
             <Col xs={12} md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Categoria *</Form.Label>
-                <Form.Select
-                  name="categoria_producto"
-                  value={nuevoProducto.categoria_producto || ""}
-                  onChange={manejoCambioinput}
-                  required
-                >
+                <InputGroup>
+                  <Form.Select
+                    name="categoria_producto"
+                    value={nuevoProducto.categoria_producto || ""}
+                    onChange={manejoCambioinput}
+                    required
+                  >
+                    
                   <option value="">Seleccione...</option>
                   {categorias.map((cat) => (
                     <option key={cat.id_categoria} value={cat.id_categoria}>
@@ -53,6 +56,14 @@ const ModalRegistroProducto = ({
                     </option>
                   ))}
                 </Form.Select>
+
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => setMostrarModalCategoria(true)}
+                  >
+                    <i className="bi bi-plus-lg"></i>
+                  </Button>
+                </InputGroup>
               </Form.Group>
             </Col>
 
