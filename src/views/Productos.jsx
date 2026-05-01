@@ -4,6 +4,7 @@ import { supabase } from "../database/supabaseconfig";
 import ModalRegistroProducto from "../components/productos/ModalRegistroProducto";
 import NotificacionOperacion from "../components/NotificationOperation";
 import CuadroBusquedas from "../components/busquedas/CuadroBusquedas";
+import TablaProductos from "../components/productos/TablaProductos";
 
 const Producto = () => {
 
@@ -75,6 +76,37 @@ const Producto = () => {
     }
   };
 
+  // ##################CARGA DE PRODUCTOS EN TABLA###########################
+  const cargarProductos = async () => {
+    setCargando(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("productos")
+        .select(
+          `*,
+          categorias (
+            nombre_categoria
+          )
+        `)
+        .order("id_producto", { ascending: false});
+
+      if (error) throw error;
+      setProductos(data || []);
+      setProductosFiltrados(data || []);
+    }catch (err) {
+      console.error("Error al cargar productos: ", err);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarProductos();
+  }, []);
+
+  // ###############################################
+
   useEffect(() => {
     if (!textoBusqueda.trim()) {
       setProductosFiltrados(productos);
@@ -144,6 +176,9 @@ const Producto = () => {
 
       if (error) throw error;
 
+      await cargarProductos();
+      setMostrarModal(false);
+
       setNuevoProducto({
         nombre_producto: "",
         descripcion_producto: "",
@@ -197,6 +232,30 @@ const Producto = () => {
           />
         </Col>
       </Row>
+
+      {/* VISUALIZACIÓN DE TABLA */}
+      { cargando ? (
+        <div className="text-center my-5">
+          <Spinner animation="border" variant="primary"/>
+          <p className="mt-2">Cargando catálogo...</p>
+        </div>
+      ) : productosFiltrados.length > 0 ? (
+        <Row>
+          <Col>
+            <TablaProductos
+              productos={productosFiltrados}
+              abrirModalEliminacion={(prod) => {
+                setProductoAEliminar(prod);
+                setMostrarModalEliminacion(true);
+              }}
+            />
+          </Col>
+        </Row>
+      ) : (
+        <Alert variant="info" className="text-center">
+          No se encontraron productos en la base de datos.
+        </Alert>
+      )}
 
       { /* Modales */}
 
