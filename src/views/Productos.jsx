@@ -5,6 +5,7 @@ import ModalRegistroProducto from "../components/productos/ModalRegistroProducto
 import NotificacionOperacion from "../components/NotificationOperation";
 import CuadroBusquedas from "../components/busquedas/CuadroBusquedas";
 import TablaProductos from "../components/productos/TablaProductos";
+import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
 
 const Producto = () => {
 
@@ -76,6 +77,58 @@ const Producto = () => {
     }
   };
 
+  // ####################### REGISTRO DE CATEGORÍAS ###########################
+  const [mostrarModalCategoria, setMostrarModalCategoria] = useState(false);
+
+  const [nuevaCategoria, setNuevaCategoria] = useState({
+    nombre_categoria: "",
+    descripcion_categoria: "",
+  });
+
+  // En Producto.jsx, debajo de manejoCambioInput del producto
+  const manejoCambioInputCategoria = (e) => {
+    const { name, value } = e.target;
+    setNuevaCategoria((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const agregarCategoriaDesdeProductos = async () => {
+    try {
+      // Validaciones...
+      const { data, error } = await supabase
+        .from("categorias")
+        .insert([{
+          nombre_categoria: nuevaCategoria.nombre_categoria,
+          descripcion_categoria: nuevaCategoria.descripcion_categoria,
+        }])
+        .select(); // Obtenemos el registro creado
+
+      if (error) throw error;
+
+      const categoriaCreada = data[0];
+
+      // 1. Refrescamos la lista de categorías del selector
+      await cargarCategorias();
+
+      // 2. 🪄 MAGIA: Marcamos la nueva categoría en el estado del producto
+      setNuevoProducto(prev => ({
+        ...prev,
+        categoria_producto: categoriaCreada.id_categoria
+      }));
+
+      // 3. Limpiamos y cerramos
+      setNuevaCategoria({ nombre_categoria: "", descripcion_categoria: "" });
+      setMostrarModalCategoria(false);
+
+      setToast({ mostrar: true, mensaje: "Categoría creada y seleccionada", tipo: "exito" });
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // ##################CARGA DE PRODUCTOS EN TABLA###########################
   const cargarProductos = async () => {
     setCargando(true);
@@ -89,12 +142,12 @@ const Producto = () => {
             nombre_categoria
           )
         `)
-        .order("id_producto", { ascending: false});
+        .order("id_producto", { ascending: false });
 
       if (error) throw error;
       setProductos(data || []);
       setProductosFiltrados(data || []);
-    }catch (err) {
+    } catch (err) {
       console.error("Error al cargar productos: ", err);
     } finally {
       setCargando(false);
@@ -123,7 +176,7 @@ const Producto = () => {
           precio.includes(textoLower)
         );
       });
-      setProductosFiltrados(resultados);
+      setProductosFiltrados(filtrados);
     }
   }, [textoBusqueda, productos]);
 
@@ -234,9 +287,9 @@ const Producto = () => {
       </Row>
 
       {/* VISUALIZACIÓN DE TABLA */}
-      { cargando ? (
+      {cargando ? (
         <div className="text-center my-5">
-          <Spinner animation="border" variant="primary"/>
+          <Spinner animation="border" variant="primary" />
           <p className="mt-2">Cargando catálogo...</p>
         </div>
       ) : productosFiltrados.length > 0 ? (
@@ -267,6 +320,15 @@ const Producto = () => {
         manejoCambioArcvhivo={manejoCambioArchivo}
         agregarProducto={agregarProducto}
         categorias={categorias}
+        setMostrarModalCategoria={setMostrarModalCategoria}
+      />
+
+      <ModalRegistroCategoria
+        mostrarModal={mostrarModalCategoria}
+        setMostrarModal={setMostrarModalCategoria}
+        nuevaCategoria={nuevaCategoria}
+        manejoCambioInput={manejoCambioInputCategoria}
+        agregarCategoria={agregarCategoriaDesdeProductos} 
       />
 
       <NotificacionOperacion
