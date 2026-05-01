@@ -6,6 +6,7 @@ import NotificacionOperacion from "../components/NotificationOperation";
 import CuadroBusquedas from "../components/busquedas/CuadroBusquedas";
 import TablaProductos from "../components/productos/TablaProductos";
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
+import ModalEliminacionProducto from "../components/productos/ModalEliminacionProducto";
 
 const Producto = () => {
 
@@ -256,6 +257,50 @@ const Producto = () => {
     }
   };
 
+  // ############################# ELIMINAR PRODUCTO #############################
+  const eliminarProducto = async () => {
+    if (!productoAEliminar) return;
+
+    try {
+      setMostrarModalEliminacion(false);
+
+      // 1. Opcional pero recomendado: Borrar la imagen del Storage
+      if (productoAEliminar.imagen_url) {
+        // Extraemos el nombre del archivo de la URL pública
+        const urlPartes = productoAEliminar.imagen_url.split("/");
+        const nombreArchivo = urlPartes[urlPartes.length - 1];
+
+        await supabase.storage
+          .from("imagenes_productos")
+          .remove([nombreArchivo]);
+      }
+
+      // 2. Borrar el registro de la base de datos
+      const { error } = await supabase
+        .from("productos")
+        .delete()
+        .eq("id_producto", productoAEliminar.id_producto);
+
+      if (error) throw error;
+
+      // 3. Notificar y recargar
+      await cargarProductos();
+      setToast({
+        mostrar: true,
+        message: `Producto "${productoAEliminar.nombre_producto}" eliminado.`,
+        tipo: "exito",
+      });
+
+    } catch (err) {
+      console.error("Error al eliminar:", err.message);
+      setToast({
+        mostrar: true,
+        message: "Error al eliminar el producto.",
+        tipo: "error",
+      });
+    }
+  };
+
   return (
     <Container className="mt-3">
 
@@ -328,7 +373,14 @@ const Producto = () => {
         setMostrarModal={setMostrarModalCategoria}
         nuevaCategoria={nuevaCategoria}
         manejoCambioInput={manejoCambioInputCategoria}
-        agregarCategoria={agregarCategoriaDesdeProductos} 
+        agregarCategoria={agregarCategoriaDesdeProductos}
+      />
+
+      <ModalEliminacionProducto
+        mostrarModalEliminacion={mostrarModalEliminacion}
+        setMostrarModalEliminacion={setMostrarModalEliminacion}
+        eliminarProducto={eliminarProducto}
+        producto={productoAEliminar}
       />
 
       <NotificacionOperacion
