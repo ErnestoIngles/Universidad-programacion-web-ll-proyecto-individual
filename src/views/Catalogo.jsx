@@ -53,9 +53,11 @@ const Catalogo = () => {
       const textoLower = textoBusqueda.toLowerCase().trim();
       
       filtrados = filtrados.filter((producto) => {
-        const nombre = producto.nombre_producto.toLowerCase() || "";
-        const descripcion = producto.descripcion.producto.toLowerCase() || "";
-        const precioTexto = producto.precio_venta?.toString() || "";
+        if (!producto) return false;
+
+        const nombre = (producto.nombre_producto || "").toLowerCase();
+        const descripcion = (producto.descripcion_producto || "").toLowerCase();
+        const precioTexto = (producto.precio_venta?.toString() || "").toLowerCase();
 
         return (
           nombre.includes(textoLower) ||
