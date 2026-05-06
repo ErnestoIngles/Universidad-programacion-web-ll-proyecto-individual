@@ -51,7 +51,7 @@ const TarjetaCatalogo = ({ producto, categoriaNombre }) => {
           </Card.Title>
 
           {descripcion && (
-            <Card.Text className="text-muted small flex-grow-1">
+            <Card.Text as="div" className="text-muted small flex-grow-1">
               {previsualizacionTexto}
               {tieneMasTexto && (
                 <span className="text-primary fw-medium ms-1">
@@ -85,9 +85,9 @@ const TarjetaCatalogo = ({ producto, categoriaNombre }) => {
         <Modal.Body className="pt-3">
           <div className="row g-4">
             <div className="col-md-5">
-              {producto.url_imagen ? (
+              {producto.imagen_url ? (
                 <img
-                  src={producto.url_imagen}
+                  src={producto.imagen_url}
                   alt={producto.nombre_producto}
                   className="img-fluid rounded shadow-sm"
                   style={{ maxHeight: "400px", objectFit: "contain", width: "100%" }}
@@ -125,9 +125,9 @@ const TarjetaCatalogo = ({ producto, categoriaNombre }) => {
         </Modal.Body>
 
         <ModalFooter className="border-0">
-          <button variant="secondary" onClick={() => setMostrarModal(false)}>
+          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
             Cerrar
-          </button>
+          </Button>
         </ModalFooter>
       </Modal>
     </>
