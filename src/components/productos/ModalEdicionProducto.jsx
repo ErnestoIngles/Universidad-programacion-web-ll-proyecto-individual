@@ -140,8 +140,8 @@ const ModalEdicionProducto = ({
           Cancelar
         </Button>
 
-        <Button variant="secondary" onClick={() => setMostrarModalEdicion(false)}>
-          Actualizar
+        <Button variant="success" onClick={handActualizar} disabled={deshabilitado}>
+          {deshabilitado ? "Actualizando..." : "Actualizar Producto"}
         </Button>
       </Modal.Footer>
     </Modal>

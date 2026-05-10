@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button, Image, ProgressBar } from "react-bootstrap";
 
-const TablaProductos = ({ productos, abrirModalEliminacion }) => {
+const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion }) => {
   return (
     <Table hover responsive className="align-middle">
       <thead className="table-light">
@@ -21,7 +21,7 @@ const TablaProductos = ({ productos, abrirModalEliminacion }) => {
               {/*VISUALIZACIÓN DE LA IMAGEN */}
               <Image
                 src={prod.imagen_url}
-                alt={ProgressBar.nombre_producto}
+                alt={prod.nombre_producto}
                 rounded
                 style={{ width: "50px", height: "50px", objectFit: "cover" }}
                 onError={(e) => {e.target.src = "https://via.placeholder.com/50"; }}
@@ -41,7 +41,18 @@ const TablaProductos = ({ productos, abrirModalEliminacion }) => {
               >
                 <i className="bi bi-trash"></i>
               </Button>
+
+              
+              <Button
+                variant="outline-primary"
+                size="sm"
+                onClick={() => abrirModalEdicion(prod)}
+              >
+                <i className="bi bi-pencil"></i>
+              </Button>
+
             </td>
+
           </tr>
         ))}
       </tbody>
