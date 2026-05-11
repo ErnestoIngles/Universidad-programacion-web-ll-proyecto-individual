@@ -29,7 +29,7 @@ const Categorias = () => {
     id_categoria: "",
   });
 
-  const [toast, setToast] = useState({ mostrar: false, mensaje: "", tipo: "" });
+  const [toast, setToast] = useState({ mostrar: false, message: "", tipo: "" });
   const [mostrarModal, setMostrarModal] = useState(false);
 
   const [nuevaCategoria, setNuevaCategoria] = useState({
@@ -129,7 +129,7 @@ const Categorias = () => {
       ) {
         setToast({
           mostrar: true,
-          mensaje: "Se debe de rellenar todos los campos.",
+          message: "Se debe de rellenar todos los campos.",
           tipo: "advertencia",
         });
         return;
@@ -149,22 +149,24 @@ const Categorias = () => {
         console.error("Error al actualizar categorías: ", error.message);
         setToast({
           mostrar: true,
-          mensaje: `Error al actualizar la categoría: ${categoriaEditar.nombre_categoria}.`,
+          message: `Error al actualizar la categoría: ${categoriaEditar.nombre_categoria}.`,
           tipo: "error",
         });
         return;
       }
 
       await cargarCategorias();
+
       setToast({
         mostrar: true,
-        mensaje: `La categoría ${categoriaEditar.nombre_categoria} actualizada exitosamente.`,
+        message: `La categoría ${categoriaEditar.nombre_categoria} actualizada exitosamente.`,
         tipo: "exito",
       });
+
     } catch (err) {
       setToast({
         mostrar: true,
-        mensaje: "Error inesperado al actualizar la categoría.",
+        message: "Error inesperado al actualizar la categoría.",
         tipo: "error",
       });
       console.error("Excepción al actualizar la categoría: ", err.message);
@@ -184,7 +186,7 @@ const Categorias = () => {
       ) {
         setToast({
           mostrar: true,
-          mensaje: "Debe llenar todos los campos.",
+          message: "Debe llenar todos los campos.",
           tipo: "advertencia",
         });
         return;
@@ -201,7 +203,7 @@ const Categorias = () => {
         console.error("Error al agregar categoría:", error.message);
         setToast({
           mostrar: true,
-          mensaje: "Error al registrar categoría.",
+          message: "Error al registrar categoría.",
           tipo: "error",
         });
         return;
@@ -210,7 +212,7 @@ const Categorias = () => {
       // Éxito
       setToast({
         mostrar: true,
-        mensaje: `Categoria "${nuevaCategoria.nombre_categoria}" registrada exitosamente.`,
+        message: `Categoria "${nuevaCategoria.nombre_categoria}" registrada exitosamente.`,
         tipo: "exito",
       });
 
@@ -223,7 +225,7 @@ const Categorias = () => {
       console.error("Excepción al agregar categoría:", err.message);
       setToast({
         mostrar: true,
-        mensaje: "Error inesperado al registrar categoría.",
+        message: "Error inesperado al registrar categoría.",
         tipo: "error",
       });
     }
@@ -245,7 +247,7 @@ const Categorias = () => {
         console.error("Error al eliminar categoria: ", error.message);
         setToast({
           mostrar: true,
-          mensaje: `Error al eliminar la categoría ${categoriaAEliminar.nombre_categoria}.`,
+          message: `Error al eliminar la categoría ${categoriaAEliminar.nombre_categoria}.`,
           tipo: "error",
         });
         return;
@@ -254,16 +256,16 @@ const Categorias = () => {
       await cargarCategorias();
       setToast({
         mostrar : true,
-        mensaje: `Categoría ${categoriaAEliminar.nombre_categoria} eliminada exiosamente.`,
+        message: `Categoría ${categoriaAEliminar.nombre_categoria} eliminada exiosamente.`,
         tipo: "exito",
       });
     }catch (err) {
       setToast({
         mostrar: true,
-        mensaje: "Error inesperado al eliminar categoría.",
+        message: "Error inesperado al eliminar categoría.",
         tipo: "error",
       });
-      console.error("Excepción al eliminar categoría: ", err.mensaje);
+      console.error("Excepción al eliminar categoría: ", err.message);
     }
   };
 
@@ -363,9 +365,9 @@ const Categorias = () => {
       {/* Notificación */}
       <NotificacionOperacion
         mostrar={toast.mostrar}
-        mensaje={toast.mensaje}
+        message={toast.message}
         tipo={toast.tipo}
-        onCerrar={() => setToast({ ...toast, mostrar: false })}
+        onClose={() => setToast({ ...toast, mostrar: false })}
       />
 
 

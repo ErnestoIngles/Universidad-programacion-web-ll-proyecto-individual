@@ -125,7 +125,7 @@ const Producto = () => {
       setNuevaCategoria({ nombre_categoria: "", descripcion_categoria: "" });
       setMostrarModalCategoria(false);
 
-      setToast({ mostrar: true, mensaje: "Categoría creada y seleccionada", tipo: "exito" });
+      setToast({ mostrar: true, message: "Categoría creada y seleccionada", tipo: "exito" });
 
     } catch (err) {
       console.error(err);
@@ -493,7 +493,7 @@ const Producto = () => {
 
       <NotificacionOperacion
         mostrar={toast.mostrar}
-        mensaje={toast.message}
+        message={toast.message}
         tipo={toast.tipo}
         onClose={() => setToast({ ...toast, mostrar: false })}
       />
