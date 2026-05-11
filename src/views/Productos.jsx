@@ -1,6 +1,8 @@
 import React, { use, useEffect, useState } from "react";
 import { Container, Row, Col, Button, Alert, Spinner } from "react-bootstrap";
 import { supabase } from "../database/supabaseconfig";
+
+
 import ModalRegistroProducto from "../components/productos/ModalRegistroProducto";
 import NotificacionOperacion from "../components/NotificationOperation";
 import CuadroBusquedas from "../components/busquedas/CuadroBusquedas";
@@ -8,11 +10,15 @@ import TablaProductos from "../components/productos/TablaProductos";
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
 import ModalEliminacionProducto from "../components/productos/ModalEliminacionProducto";
 import ModalEdicionProducto from "../components/productos/ModalEdicionProducto.jsx"
+import Paginacion from "../components/ordenamiento/Paginacion";
+
 
 const Producto = () => {
 
   const [productos, setProductos] = useState([]);
+
   const [productosFiltrados, setProductosFiltrados] = useState([]);
+
   const [categorias, setCategorias] = useState([]);
   const [textoBusqueda, setTextoBusqueda] = useState("");
   const [cargando, setCargando] = useState(true);
@@ -262,7 +268,7 @@ const Producto = () => {
   // ############################ EDITAR PRODUCTO ###############################
   const manejoCambioInputEdicion = (e) => {
     const { name, value } = e.target;
-      setProductoEditar((prev) => ({ ...prev, [name]: value }));
+    setProductoEditar((prev) => ({ ...prev, [name]: value }));
   };
 
   const manejoCambioArcvhivoActualizar = (e) => {
@@ -276,7 +282,7 @@ const Producto = () => {
 
   const actualizarProducto = async () => {
     try {
-      
+
       if (
         !productoEditar.nombre_producto.trim() ||
         !productoEditar.categoria_producto ||
@@ -306,25 +312,25 @@ const Producto = () => {
           .from("imagenes_productos")
           .upload(nombreArchivo, productoEditar.archivo);
 
-          if (uploadError) throw uploadError;
+        if (uploadError) throw uploadError;
 
-          const { data: urlData } = supabase.storage
-            .from("imagenes_productos")
-            .getPublicUrl(nombreArchivo);
-          datosActualizados.imagen_url =  urlData.publicUrl;
+        const { data: urlData } = supabase.storage
+          .from("imagenes_productos")
+          .getPublicUrl(nombreArchivo);
+        datosActualizados.imagen_url = urlData.publicUrl;
 
-          if (productoEditar.imagen_url) {
-            const nombreAnterior = productoEditar.imagen_url.split("/").pop().split("?")[0];
-            await supabase.storage.from("imagenes_productos").remove([nombreAnterior]).catch((e) => {
-              console.warn("No se pudo borrar la imagen anterior, quizas ya no existía", err);
-            });
-          }
+        if (productoEditar.imagen_url) {
+          const nombreAnterior = productoEditar.imagen_url.split("/").pop().split("?")[0];
+          await supabase.storage.from("imagenes_productos").remove([nombreAnterior]).catch((e) => {
+            console.warn("No se pudo borrar la imagen anterior, quizas ya no existía", err);
+          });
+        }
       }
 
       const { error } = await supabase
-      .from("productos")
-      .update(datosActualizados)
-      .eq("id_producto", productoEditar.id_producto);
+        .from("productos")
+        .update(datosActualizados)
+        .eq("id_producto", productoEditar.id_producto);
 
       if (error) throw error;
 
@@ -348,7 +354,7 @@ const Producto = () => {
       console.error("Error al actualizar: ", err);
       setToast({ mostrar: true, message: "Error al actualizar producto", tipo: "error" })
     }
-    
+
   };
 
   // ############################# ELIMINAR PRODUCTO #############################
@@ -395,6 +401,20 @@ const Producto = () => {
     }
   };
 
+
+  // ############################Paginación###################
+  const [registrosPorPagina, establecerRegistrosPorPagina] = useState(5);
+  const [paginaActual, establcerPaginaActual] = useState(1);
+
+  const productosPaginadas = productosFiltrados.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina
+  );
+
+
+  //###########################################################
+
+
   return (
     <Container className="mt-3">
 
@@ -425,33 +445,18 @@ const Producto = () => {
         </Col>
       </Row>
 
-      {/* VISUALIZACIÓN DE TABLA */}
-      {cargando ? (
-        <div className="text-center my-5">
-          <Spinner animation="border" variant="primary" />
-          <p className="mt-2">Cargando catálogo...</p>
-        </div>
-      ) : productosFiltrados.length > 0 ? (
-        <Row>
+      {/* Mensaje de no coincidencias solo cuando hay búsqueda y no hay resultados */}
+      {!cargando && textoBusqueda.trim() && productosFiltrados.length === 0 && (
+        <Row className="mb-4">
           <Col>
-            <TablaProductos
-              productos={productosFiltrados}
-              abrirModalEliminacion={(prod) => {
-                setProductoAEliminar(prod);
-                setMostrarModalEliminacion(true);
-              }}
-              abrirModalEdicion={(prod) => {
-                setProductoEditar(prod);
-                setMostrarModalEdicion(true);
-              }}
-            />
+            <Alert variant="info" className="text-center">
+              <i className="bi bi-info-circle me-2"></i>
+              No se encontraron productos que coincidan con "{textoBusqueda}".
+            </Alert>
           </Col>
         </Row>
-      ) : (
-        <Alert variant="info" className="text-center">
-          No se encontraron productos en la base de datos.
-        </Alert>
       )}
+
 
       { /* Modales */}
 
@@ -474,7 +479,7 @@ const Producto = () => {
         agregarCategoria={agregarCategoriaDesdeProductos}
       />
 
-      <ModalEdicionProducto 
+      <ModalEdicionProducto
         mostrarModalEdicion={mostrarModalEdicion}
         setMostrarModalEdicion={setMostrarModalEdicion}
         productoEditar={productoEditar}
@@ -498,6 +503,41 @@ const Producto = () => {
         onClose={() => setToast({ ...toast, mostrar: false })}
       />
 
+
+      {/* Sin registros */}
+      {!cargando && productos.length === 0 && (
+        <Row className="text-center my-5">
+          <Col>
+            <p className="text-muted fs-5">No hay productos registrados todavía.</p>
+          </Col>
+        </Row>
+      )}
+
+
+      {/* Lista de categorías filtratarjetas-categorias */}
+      {!cargando && productosFiltrados.length > 0 && (
+        <>
+          <Row>
+            <Col xs={12} sm={12} md={12} className="d-lg-none">
+            </Col>
+            <Col lg={12} className="d-none d-lg-block">
+              <TablaProductos
+                productos={productosPaginadas}
+                abrirModalEdicion={mostrarModalEdicion}
+                abrirModalEliminacion={mostrarModalEliminacion}
+              />
+            </Col>
+          </Row>
+
+          <Paginacion
+            registrosPorPagina={registrosPorPagina}
+            totalRegistros={productosFiltrados.length}
+            paginaActual={paginaActual}
+            establcerPaginaActual={establcerPaginaActual}
+            establecerRegistrosPorPagina={establecerRegistrosPorPagina}
+          />
+        </>
+      )}
     </Container>
   );
 };
