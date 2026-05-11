@@ -24,7 +24,7 @@ const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion })
                 alt={prod.nombre_producto}
                 rounded
                 style={{ width: "50px", height: "50px", objectFit: "cover" }}
-                onError={(e) => {e.target.src = "https://via.placeholder.com/50"; }}
+                onError={(e) => { e.target.src = "https://via.placeholder.com/50"; }}
               />
             </td>
             <td>
@@ -34,21 +34,22 @@ const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion })
             <td>{prod.categorias?.nombre_categoria}</td>
             <td>${parseFloat(prod.precio_venta).toFixed(2)}</td>
             <td className="text-end">
+
+              <Button
+                variant="outline-warning"
+                size="sm"
+                className="me-2"
+                onClick={() => abrirModalEdicion(prod)}
+              >
+                <i className="bi bi-pencil"></i>
+              </Button>
+
               <Button
                 variant="outline-danger"
                 size="sm"
                 onClick={() => abrirModalEliminacion(prod)}
               >
                 <i className="bi bi-trash"></i>
-              </Button>
-
-              
-              <Button
-                variant="outline-primary"
-                size="sm"
-                onClick={() => abrirModalEdicion(prod)}
-              >
-                <i className="bi bi-pencil"></i>
               </Button>
 
             </td>
