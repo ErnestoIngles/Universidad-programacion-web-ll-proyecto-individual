@@ -7,24 +7,9 @@ const TablaCategorias = ({
   abrirModalEdicion,
   abrirModalEliminacion,
 }) => {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (categorias && categorias.length > 0) {
-      setLoading(false);
-    } else {
-      setLoading(true);
-    }
-  }, [categorias]);
 
   return (
     <>
-      {loading ? (
-        <div className="text-center py-4">
-          <h4>Cargando categorías...</h4>
-          <Spinner animation="border" variant="success" role="status" />
-        </div>
-      ) : (
         <Table striped bordered hover responsive size="sm">
           <thead>
             <tr>
@@ -64,7 +49,6 @@ const TablaCategorias = ({
             ))}
           </tbody>
         </Table>
-      )}
     </>
   );
 };

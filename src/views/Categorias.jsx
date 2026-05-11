@@ -58,11 +58,11 @@ const Categorias = () => {
       setCategoriasFiltradas(filtradas);
     }
   }, [textoBusqueda, categorias]);
-// ####################################################
+  // ####################################################
 
 
 
-// ############################Paginación###################
+  // ############################Paginación###################
   const [registrosPorPagina, establecerRegistrosPorPagina] = useState(5);
   const [paginaActual, establcerPaginaActual] = useState(1);
 
@@ -233,15 +233,15 @@ const Categorias = () => {
 
 
   const eliminarCategoria = async () => {
-    if(!categoriaAEliminar) return;
+    if (!categoriaAEliminar) return;
 
     try {
       setMostrarModalEliminacion(false);
 
-      const {error} = await supabase
-      .from("categorias")
-      .delete()
-      .eq("id_categoria", categoriaAEliminar.id_categoria);
+      const { error } = await supabase
+        .from("categorias")
+        .delete()
+        .eq("id_categoria", categoriaAEliminar.id_categoria);
 
       if (error) {
         console.error("Error al eliminar categoria: ", error.message);
@@ -255,11 +255,11 @@ const Categorias = () => {
 
       await cargarCategorias();
       setToast({
-        mostrar : true,
+        mostrar: true,
         message: `Categoría ${categoriaAEliminar.nombre_categoria} eliminada exiosamente.`,
         tipo: "exito",
       });
-    }catch (err) {
+    } catch (err) {
       setToast({
         mostrar: true,
         message: "Error inesperado al eliminar categoría.",
@@ -309,10 +309,10 @@ const Categorias = () => {
       {!cargando && textoBusqueda.trim() && categoriasFiltradas.length === 0 && (
         <Row className="mb-4">
           <Col>
-          <Alert variant="info" className="text-center">
-            <i className="bi bi-info-circle me-2"></i>
-            No se encontraron categorías que coincidan con "{textoBusqueda}".
-          </Alert>
+            <Alert variant="info" className="text-center">
+              <i className="bi bi-info-circle me-2"></i>
+              No se encontraron categorías que coincidan con "{textoBusqueda}".
+            </Alert>
           </Col>
         </Row>
       )}
@@ -342,17 +342,6 @@ const Categorias = () => {
         categoria={categoriaAEliminar}
       />
 
-      {/* Paginación */}
-      {categoriasFiltradas.length > 0 && (
-        <Pagination
-          registrosPorPagina={registrosPorPagina}
-          totalRegistros={categoriasFiltradas.length}
-          paginaActual={paginaActual}
-          establcerPaginaActual={establcerPaginaActual}
-          establecerRegistrosPorPagina={establecerRegistrosPorPagina}
-        />
-      )}
-
       {/* Sin registros */}
       {!cargando && categorias.length === 0 && (
         <Row className="text-center my-5">
@@ -373,22 +362,32 @@ const Categorias = () => {
 
       {/* Lista de categorías filtratarjetas-categorias */}
       {!cargando && categoriasFiltradas.length > 0 && (
-        <Row>
-          <Col xs={12} sm={12} md={12} className="d-lg-none">
-            <TarjetaCategoria
-              categorias={categoriasFiltradas}
-              abrirModalEdicion={abrirModalEdicion}
-              abrirModalEliminacion={abrirModalEliminacion}
-            />
-          </Col>
-          <Col lg={12} className="d-none d-lg-block">
-            <TablaCategorias
-              categorias={categoriasFiltradas}
-              abrirModalEdicion={abrirModalEdicion}
-              abrirModalEliminacion={abrirModalEliminacion}
-            />
-          </Col>
-        </Row>
+        <>
+          <Row>
+            <Col xs={12} sm={12} md={12} className="d-lg-none">
+              <TarjetaCategoria
+                categorias={categoriasPaginadas}
+                abrirModalEdicion={abrirModalEdicion}
+                abrirModalEliminacion={abrirModalEliminacion}
+              />
+            </Col>
+            <Col lg={12} className="d-none d-lg-block">
+              <TablaCategorias
+                categorias={categoriasPaginadas}
+                abrirModalEdicion={abrirModalEdicion}
+                abrirModalEliminacion={abrirModalEliminacion}
+              />
+            </Col>
+          </Row>
+
+          <Paginacion
+            registrosPorPagina={registrosPorPagina}
+            totalRegistros={categoriasFiltradas.length}
+            paginaActual={paginaActual}
+            establcerPaginaActual={establcerPaginaActual}
+            establecerRegistrosPorPagina={establecerRegistrosPorPagina}
+          />
+        </>
       )}
     </Container>
   );

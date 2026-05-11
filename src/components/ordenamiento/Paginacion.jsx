@@ -10,7 +10,7 @@ const Paginacion = ({
   establecerRegistrosPorPagina,
 }) => {
   //Calcular el total de páginas
-  const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+  const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina) || 1 ;
 
   //Cambiar de página
   const cambiarPagina = (numeroPagina) => {
