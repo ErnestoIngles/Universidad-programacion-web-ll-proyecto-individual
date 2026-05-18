@@ -3,6 +3,8 @@ import { Container, Row, Col, Button, Alert, Pagination } from "react-bootstrap"
 import { supabase } from "../database/supabaseconfig";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useSeleccionTarjeta } from "../components/herramientas/tarjetas/useSeleccionTarjeta";
+import TarjetaBase from "../components/herramientas/tarjetas/TarjetaBase";
 
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
 import ModalEdicionCategoria from "../components/categorias/ModalEdicionCategoria";
