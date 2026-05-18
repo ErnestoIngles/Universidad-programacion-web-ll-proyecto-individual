@@ -12,7 +12,7 @@ import ModalRegistroCategoria from "../components/categorias/ModalRegistroCatego
 import ModalEliminacionProducto from "../components/productos/ModalEliminacionProducto";
 import ModalEdicionProducto from "../components/productos/ModalEdicionProducto.jsx"
 import Paginacion from "../components/ordenamiento/Paginacion";
-
+import TarjetasProductos from "../components/productos/TarjetasProductos";
 
 const Producto = () => {
 
@@ -25,8 +25,8 @@ const Producto = () => {
   const [cargando, setCargando] = useState(true);
 
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [mostrarModalEliminacion, setMostrarModalEliminacion] = useState(false);
-  const [mostrarModalEdicion, setMostrarModalEdicion] = useState(false);
+  const [abrirModalEliminacion, setAbrirModalEliminacion] = useState(false);
+  const [abrirModalEdicion, setAbirModalEdicion] = useState(false);
 
   const [nuevoProducto, setNuevoProducto] = useState({
     nombre_producto: "",
@@ -595,12 +595,18 @@ const generarPDFProducto = async (producto) => {
         <>
           <Row>
             <Col xs={12} sm={12} md={12} className="d-lg-none">
+              <TarjetasProductos
+                productos={productosPaginadas}
+                abrirModalEdicion={abrirModalEdicion}
+                abrirModalEliminacion={abrirModalEliminacion}
+                generarPDFProducto={generarPDFProducto}
+              />
             </Col>
             <Col lg={12} className="d-none d-lg-block">
               <TablaProductos
                 productos={productosPaginadas}
-                abrirModalEdicion={mostrarModalEdicion}
-                abrirModalEliminacion={mostrarModalEliminacion}
+                abrirModalEdicion={abrirModalEdicion}
+                abrirModalEliminacion={abrirModalEliminacion}
                 generarPDFProducto={generarPDFProducto}
               />
             </Col>

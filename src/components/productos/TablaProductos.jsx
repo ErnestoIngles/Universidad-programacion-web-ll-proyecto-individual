@@ -1,7 +1,11 @@
 import React from "react";
 import { Table, Button, Image, ProgressBar } from "react-bootstrap";
 
-const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion, generarPDFProducto }) => {
+const TablaProductos = ({ 
+  productos, 
+  abrirModalEliminacion, 
+  abrirModalEdicion, 
+  generarPDFProducto }) => {
   return (
     <Table hover responsive className="align-middle">
       <thead className="table-light">
