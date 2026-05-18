@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button, Image, ProgressBar } from "react-bootstrap";
 
-const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion }) => {
+const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion, generarPDFProducto }) => {
   return (
     <Table hover responsive className="align-middle">
       <thead className="table-light">
@@ -50,6 +50,15 @@ const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion })
                 onClick={() => abrirModalEliminacion(prod)}
               >
                 <i className="bi bi-trash"></i>
+              </Button>
+
+              <Button
+                variant="outline-primary"
+                size="sm"
+                className="ms-2"
+                onClick={() => generarPDFProducto(prod)}
+              >
+                <i className="bi bi-file-pdf"></i>
               </Button>
 
             </td>
